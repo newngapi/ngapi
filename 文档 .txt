@@ -1,0 +1,239 @@
+接口说明:
+参数	类型	参数值	说明
+sign	string	加密后字符串	32 位小写 md5(random+sn+secretKey)
+random	string	随机字符串	16-32 位 小写字母 + 数字
+sn	string	固定字符串	商户前缀，请登录管理后台查看
+Content-Type	string	application/json	请求类型
+所有接口都是 POST 协议进行请求，并且接口需要验签，验签方式为在请求头中设置4个参数
+参数 sn 和 secretKey 请登录管理后台查看，如需申请请联系商务
+random 为随机字符串，长度限制 16-32 位 小写字母 + 数字组合
+sign 为 String sign=MD5(random+sn+secretKey) 的结果
+数据返回格式统一 Json 格式
+请求接口的 IP 需要添加白名单（管理后台可以自助添加）
+所有数据时区为北京时间
+建议所有接口的请求超时时间设置为 30 秒以上
+请求返回正确示例：
+{
+	“code”: 10000, // 状态码，10000 成功，其他失败
+	“msg”: “request succeeded”, // 消息
+	“data”: null
+}
+请求返回错误示例：
+{
+	“code”: 10404, // 状态码，10000 成功，其他失败
+	“msg”: “Signature verification failed”, // 消息
+	“data”: null
+}
+
+## 错误处理
+
+### 错误码说明
+| 错误码 | 描述 | 说明 |
+|--------|------|------|
+| 10000 | 成功 | Request succeeded |
+| 10001 | 失败 | Request error |
+| 10002 | 账号已存在 | PlayerId already exists |
+| 10003 | 账号不存在 | PlayerId not exists |
+| 10004 | 账号格式错误 | PlayerId error |
+| 10005 | 额度转换失败 | Transfer error |
+| 10006 | 转换金额错误 | Amount error |
+| 10007 | 时间格式错误 | Wrong time format |
+| 10008 | 链接格式错误 | ReturnUrl error |
+| 10009 | 接口请求频繁 | Frequent interface requests |
+| 10010 | 此游戏不支持试玩 | Request error |
+| 10011 | 订单号不符合要求 | OrderId is not specification |
+| 10012 | 订单号重复 | OrderId already exists |
+| 10013 | 订单号不存在 | OrderId not exists |
+| 10014 | 额度不足 | Insufficient quota |
+| 10015 | 商户余额不足 | Insufficient merchant balance |
+| 10403 | IP限制访问 | IP restricted access |
+| 10404 | 签名验证失败 | Signature verification failed |
+| 10405 | 缺少参数 | Missing parameter |
+| 10406 | 参数过多 | Too many parameters |
+| 10407 | 游戏平台错误 | PlatType code error |
+| 10408 | 游戏类型错误 | GameType error |
+| 10409 | 转换类型错误 | Type error |
+
+
+创建玩家账户V2
+* 请求地址：/api/server/create
+
+* 请求协议：POST
+
+* 请求参数：
+
+字段名称	类型	必选	说明
+platType	string	是	游戏平台（参考“游戏平台”附录）
+playerId	string	是	玩家账号，长度限制 5-11 位 小写字母 + 数字组合
+currency	string	是	货币代码 BRL:巴西雷亚尔,CNY:人民币,HKD:港币,IDR:印度尼西亚盾,INR:印度卢比,MMK:缅甸元,NGN:尼日利亚奈拉,PHP:菲律宾比索,THB:泰铢,USD:美元,VND:越南盾
+
+	
+查询余额V2
+* 请求地址：/api/server/balance
+
+* 请求协议：POST
+
+* 请求参数：
+
+字段名称	类型	必选	说明
+platType	string	是	游戏平台（参考“游戏平台”附录）
+playerId	string	是	玩家账号
+currency	string	是	货币代码 BRL:巴西雷亚尔,CNY:人民币,HKD:港币,IDR:印度尼西亚盾,INR:印度卢比,MMK:缅甸元,NGN:尼日利亚奈拉,PHP:菲律宾比索,THB:泰铢,USD:美元,VND:越南盾
+
+
+
+查询全平台余额V2.0
+请求地址：/api/server/balanceAll
+请求协议：POST
+请求说明：每个玩家每分钟内请求不能超过 3 次
+请求参数：
+字段名称	类型	必选	说明
+playerId	string	是	玩家账号
+currency	string	是	货币代码 BRL:巴西雷亚尔,CNY:人民币,HKD:港币,IDR:印度尼西亚盾,INR:印度卢比,MMK:缅甸元,NGN:尼日利亚奈拉,PHP:菲律宾比索,THB:泰铢,USD:美元,VND:越南盾
+
+
+一键转出全平台额度v2.0
+* 请求地址：/api/server/transferAll
+
+* 请求协议：POST
+
+* 请求说明：
+
+每个玩家每分钟内请求不能超过 2 次
+请求超时时间必须设置大于 30 秒
+部分游戏平台在游戏中无法转换额度
+*请求参数：
+
+字段名称	类型	必选	说明
+playerId	string	是	玩家账号
+currency	string	是	货币代码，CNY:人民币，USD:美元，HKD:港币，PHP:菲律宾比索
+
+
+登录游戏V2
+* 请求地址：/api/server/gameUrl
+
+* 请求协议：POST
+
+* 请求参数：
+
+字段名称	类型	必选	说明
+platType	string	是	游戏平台（参考“游戏平台”附录）
+playerId	string	是	玩家账号
+gameType	string	是	游戏类型，（1:视讯、2:老虎机、3:彩票、4:体育、5:电竞、6:捕鱼、7:棋牌）
+currency	string	是	货币代码 BRL:巴西雷亚尔,CNY:人民币,HKD:港币,IDR:印度尼西亚盾,INR:印度卢比,MMK:缅甸元,NGN:尼日利亚奈拉,PHP:菲律宾比索,THB:泰铢,USD:美元,VND:越南盾
+lang	string	否	游戏语言，默认简体中文（参考“游戏语言”附录）
+gameCode	string	否	游戏代码，默认游戏大厅（参考“游戏平台”附录）
+returnUrl	string	否	游戏退出时跳转地址，示例：“https://www.neapi.com“
+ingress	string	是	终端类型，device1:电脑网页版、device2:手机网页版（其他特定终端请参考“游戏平台”附录）
+oddsType	string	否	彩票盘口，A:(默认)、B、C，仅IG彩票和SGWin彩票可选
+
+
+
+试玩游戏V2
+* 请求地址：/api/server/demoUrl
+
+* 请求协议：POST
+
+* 请求参数：
+
+字段名称	类型	必选	说明
+platType	string	是	游戏平台（参考“游戏平台”附录）
+playerId	string	是	试玩玩家账号
+gameType	string	是	游戏类型，（1:视讯、2:老虎机、3:彩票、4:体育、5:电竞、6:捕鱼、7:棋牌）
+currency	string	是	货币代码，CNY:人民币，USD:美元，HKD:港币，PHP:菲律宾比索
+lang	string	否	游戏语言，默认简体中文（参考“游戏语言”附录）
+gameCode	string	否	游戏代码，默认游戏大厅（参考“游戏代码”附录）
+returnUrl	string	否	游戏退出时跳转地址，示例：“https://www.neapi.com“
+ingress	string	是	终端类型，device1:电脑网页版、device2:手机网页版（其他特定终端请参考“终端类型”附录）
+
+实时记录V2
+请求地址：/api/server/recordAll
+请求协议：POST
+请求说明：
+每分钟请求不能超过 1 次
+每次请求固定返回最新 10 分钟游戏记录（不包含当前分钟）
+请求参数：
+字段	类型	必填	说明
+currency	string	是	游戏货币，参考“游戏平台”附录
+pageNo	string	否	页码，默认第1页，按订单更新时间正序返回数据
+pageSize	string	否	页容量，默认200，最大2000
+
+
+投注订单查询V2
+请求地址：/api/server/recordOrder
+请求协议：POST
+请求说明：
+每分钟请求不能超过 1 次
+请求参数：
+字段	类型	必填	说明
+currency	string	是	游戏货币，参考“游戏平台”附录
+orderIds	string	是	订单号，多笔订单号以,分隔
+
+历史记录V2
+请求地址：/api/server/recordHistory
+请求协议：POST
+请求说明：
+每小时请求不能超过 5 次
+每次请求必须间隔 1 分钟（不包含分页）
+开始时间必须小于或等于结束时间
+开始时间和结束时间不能超过 6 小时（可以获取 15 天内的数据）
+请求参数：
+字段	类型	必填	说明
+currency	string	是	游戏货币，参考“游戏平台”附录
+startTime	string	是	订单更新时间 UTC +8 开始，时间格式：“yyyy-MM-dd HH:mm:ss”，示例：“2022-08-08 18:18:18”
+endTime	string	是	订单更新时间 UTC +8 结束，时间格式：“yyyy-MM-dd HH:mm:ss”，示例：“2022-08-08 18:18:18”
+pageNo	string	否	页码，默认第1页，按订单更新时间正序返回数据
+pageSize	string	否	页容量，默认200，最大2000
+
+
+额度转换V2
+* 请求地址：/api/server/transfer
+
+* 请求协议：POST
+
+* 请求说明：
+
+开元棋牌/美天棋牌/乐游棋牌/PG电子在游戏中不能转额度
+非常重要：额度转换请求超时时间必须设置大于30秒
+* 请求参数：
+
+字段名称	类型	必选	说明
+platType	string	是	游戏平台（参考“游戏平台”附录）
+playerId	string	是	玩家账号
+currency	string	是	货币代码 BRL:巴西雷亚尔,CNY:人民币,HKD:港币,IDR:印度尼西亚盾,INR:印度卢比,MMK:缅甸元,NGN:尼日利亚奈拉,PHP:菲律宾比索,THB:泰铢,USD:美元,VND:越南盾
+amount	string	是	转换金额，支持两位小数，最小金额1
+type	string	是	转换类型，1:转入、2:转出
+orderId	string	否	订单号，16-32 位字母 + 数字组合，商户平台传过来要保证唯一性，示例：”97460a6f6eaacc7e246a0a4374b64c13“
+
+
+
+
+额度转换状态查询v2
+* 请求地址：/api/server/transferStatus
+
+* 请求协议：POST
+
+* 请求参数：
+
+字段名称	类型	必选	说明
+playerId	string	是	玩家账号
+currency	string	是	货币代码 BRL:巴西雷亚尔,CNY:人民币,HKD:港币,IDR:印度尼西亚盾,INR:印度卢比,MMK:缅甸元,NGN:尼日利亚奈拉,PHP:菲律宾比索,THB:泰铢,USD:美元,VND:越南盾
+orderId	string	是	订单号
+
+
+
+获取游戏代码v2
+* 请求地址：/api/server/gameCode
+
+* 请求协议：POST
+
+* 请求说明：每小时请求不能超过 30 次
+
+字段名称	类型	必选	说明
+platType	string	是	游戏平台，目前支持：ag、as、bbin、bg、boya、cq9、db2、db6、db7、fc、fg、jdb、joker、km、ky、leg、lgd、mg、mt、mw、nw、pg、pp、pt、rsg、t1、vg、wl、ww、xgd、yoo
+
+
+查询商户余额V2
+请求地址：/api/server/quota
+请求协议：POST
+此接口不需要传参数

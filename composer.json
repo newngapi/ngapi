@@ -1,0 +1,57 @@
+{
+    "name": "newngapi/ngapi",
+    "description": "A PHP SDK for integrating with the NG gaming platform API. This SDK provides a simple and efficient way to interact with the NG gaming platform's API services.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "NG API Team",
+            "email": "newngapi@gmail.com",
+            "homepage": "https://www.neapi.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "guzzlehttp/guzzle": "^6.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Newngapi\\Ngapi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Newngapi\\Ngapi\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "keywords": [
+        "ng",
+        "gaming",
+        "api",
+        "sdk",
+        "casino",
+        "gambling",
+        "game-platform",
+        "online-gaming",
+        "php-sdk",
+        "rest-api",
+        "integration",
+        "betting",
+        "sports-betting",
+        "live-casino",
+        "slot-games"
+    ],
+    "homepage": "https://www.neapi.com",
+    "support": {
+        "email": "newngapi@gmail.com",
+        "docs": "https://wiki.neapi.com",
+        "issues": "https://github.com/newngapi/ngapi/issues",
+        "source": "https://github.com/newngapi/ngapi"
+    }
+} 
