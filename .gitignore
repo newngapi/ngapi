@@ -5,4 +5,6 @@ composer.lock
 .vscode/
 *.log
 .DS_Store
-文档.txt 
+*.txt
+!README.md
+"文档 .txt" 
